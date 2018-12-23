@@ -1,0 +1,12 @@
+{
+	"ImportPath": "biew.io/docker-ovpn-client/zeroproxy",
+	"GoVersion": "go1.11",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/elazarl/goproxy",
+			"Comment": "v1.1-6-g2ce16c9",
+			"Rev": "2ce16c963a8ac5bd6af851d4877e38701346983f"
+		}
+	]
+}

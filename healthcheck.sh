@@ -7,9 +7,9 @@ check_openvpn() {
 	pgrep openvpn &>/dev/null
 }
 
-check_privoxy() {
-	pgrep privoxy &>/dev/null
+check_zeroproxy() {
+	pgrep zeroproxy &>/dev/null
 }
 
 check_openvpn || (echo "openvpn is not running" && exit 1)
-check_privoxy || (echo "privoxy is not running" && exit 1)
+check_zeroproxy || (echo "zeroproxy is not running" && exit 1)

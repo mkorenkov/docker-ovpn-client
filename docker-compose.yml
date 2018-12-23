@@ -2,6 +2,7 @@ version: '3'
 
 services:
   ovpn:
+    container_name: ovpn
     image: mkorenkov/ovpn:latest
     restart: unless-stopped
     dns:
@@ -16,3 +17,4 @@ services:
       - 8118:8118
     cap_add:
       - NET_ADMIN
+    network_mode: host

@@ -15,7 +15,7 @@ docker run -d \
     mkorenkov/ovpn:latest
 ```
 
-This will expose HTTP proxy on port 8118 (privoxy).
+This will expose HTTP proxy on port 8118.
 
 Usage:
 

@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+#Unofficial Bash Strict Mode http://redsymbol.net/articles/unofficial-bash-strict-mode/
+
+exec >>/var/log/zeroproxy-daemon.log
+exec 2>&1
+
+[[ -e /var/run/zeroproxy-daemon/pid ]] && rm -f /var/run/zeroproxy-daemon/pid
+mkdir -p /var/run/zeroproxy-daemon
+
+echo "Starting zeroproxy daemon"
+exec /usr/local/bin/zeroproxy
