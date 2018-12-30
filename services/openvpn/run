@@ -15,7 +15,9 @@ export LC_ALL="en_US.UTF-8"
 mkdir -p /dev/net
 [[ ! -c /dev/net/tun ]] && mknod /dev/net/tun c 10 200
 
-chmod 400 /vpn/auth.txt
+CONFIG_DIR="${CONFIG_DIR:-/vpn}"
+
+chmod 400 "$CONFIG_DIR/auth.txt"
 
 echo "Starting OpenVPN daemon"
-exec /usr/sbin/openvpn --config /vpn/config.ovpn --redirect-gateway --auth-user-pass /vpn/auth.txt --auth-nocache
+exec /usr/sbin/openvpn --config "$CONFIG_DIR/config.ovpn" --redirect-gateway --auth-user-pass "$CONFIG_DIR/auth.txt" --auth-nocache
