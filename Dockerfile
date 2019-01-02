@@ -25,6 +25,6 @@ COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 VOLUME ["/vpn/config.ovpn", "/vpn/auth.txt"]
 EXPOSE 8118
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=3 CMD [ "/usr/local/bin/healthcheck.sh" ]
+HEALTHCHECK --interval=20s --timeout=15s --start-period=90s --retries=3 CMD [ "/usr/local/bin/healthcheck.sh" ]
 
 ENTRYPOINT ["/usr/local/bin/entry.sh"]

@@ -12,18 +12,22 @@ check_zeroproxy() {
 }
 
 ping_ip4() {
-	ping -c 4 "$1" &>/dev/null
+	ping -c 1 -n "$1" &>/dev/null
 }
 
 ping_ip6() {
-	ping -6 -c 4 "$1" &>/dev/null
+	ping -6 -c 1 -n "$1" &>/dev/null
 }
 
 check_ipv4() {
 	addrs=("8.8.8.8" "8.8.4.4")
 
-	for ip in ${addrs[@]}; do
-		ping_ip4 "$ip" && return 0
+	for i in {1..5}; do
+		for ip in ${addrs[@]}; do
+			ping_ip4 "$ip" && return 0
+			sleep 0.2
+		done
+		sleep 0.2
 	done
 	return 1
 }
@@ -31,8 +35,12 @@ check_ipv4() {
 check_ipv6() {
 	addrs=("2001:4860:4860::8888" "2001:4860:4860::8844")
 
-	for ip in ${addrs[@]}; do
-		ping_ip6 "$ip" && return 0
+	for i in {1..5}; do
+		for ip in ${addrs[@]}; do
+			ping_ip6 "$ip" && return 0
+			sleep 0.2
+		done
+		sleep 0.2
 	done
 	return 1
 }
