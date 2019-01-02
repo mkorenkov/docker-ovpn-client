@@ -16,8 +16,9 @@ mkdir -p /dev/net
 [[ ! -c /dev/net/tun ]] && mknod /dev/net/tun c 10 200
 
 CONFIG_DIR="${CONFIG_DIR:-/vpn}"
+OVPN_CONFIG="${OVPN_CONFIG:-$CONFIG_DIR/config.ovpn}"
 
 chmod 400 "$CONFIG_DIR/auth.txt"
 
 echo "Starting OpenVPN daemon"
-exec /usr/sbin/openvpn --config "$CONFIG_DIR/config.ovpn" --redirect-gateway --auth-user-pass "$CONFIG_DIR/auth.txt" --auth-nocache
+exec /usr/sbin/openvpn --config "$OVPN_CONFIG" --redirect-gateway --auth-user-pass "$CONFIG_DIR/auth.txt" --auth-nocache
