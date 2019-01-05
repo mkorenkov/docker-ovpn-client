@@ -16,6 +16,17 @@ mkdir -p /dev/net
 [[ ! -c /dev/net/tun ]] && mknod /dev/net/tun c 10 200
 
 CONFIG_DIR="${CONFIG_DIR:-/vpn}"
+
+# support for OpenVPN locate command
+# use case: 
+#    select random config from the pool and 
+#    do a basic healthcheck
+if [ ! -z "$OVPN_CONFIG_LOCATE_CMD" ]; then
+    cfg_path="$($OVPN_CONFIG_LOCATE_CMD)"
+    if [ $? -eq 0 ]; then
+        OVPN_CONFIG="$cfg_path"
+    fi
+fi
 OVPN_CONFIG="${OVPN_CONFIG:-$CONFIG_DIR/config.ovpn}"
 
 chmod 400 "$CONFIG_DIR/auth.txt"
