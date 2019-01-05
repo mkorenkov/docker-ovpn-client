@@ -11,40 +11,35 @@ check_zeroproxy() {
 	pgrep zeroproxy &>/dev/null
 }
 
-ping_ip4() {
-	ping -c 1 -n "$1" &>/dev/null
+# NOTE: ping does not work realiably in docker for OSX
+# https://forums.docker.com/t/ping-from-within-a-container-does-not-actually-ping/11787/12
+#
+# So, instead, let's curl google.com and facebook.com
+
+curl4() {
+	curl -s -o /dev/null -w '%{http_code}' "$1"
 }
 
-ping_ip6() {
-	ping -6 -c 1 -n "$1" &>/dev/null
+curl6() {
+	curl -6 -s -o /dev/null -w '%{http_code}' "$1"
 }
 
-check_ipv4() {
-	addrs=("8.8.8.8" "8.8.4.4")
-
-	for i in {1..5}; do
-		for ip in ${addrs[@]}; do
-			ping_ip4 "$ip" && return 0
-			sleep 0.2
-		done
-		sleep 0.2
-	done
-	return 1
+healthcheck_facebook() {
+	# check HTTP HEAD gets a redirect
+	url="http://facebook.com"
+	res1="$(curl4 $url || true)"
+	res2="$(curl6 $url || true)"
+	[[ $res1 -eq 302 || $res2 -eq 302 ]]
 }
 
-check_ipv6() {
-	addrs=("2001:4860:4860::8888" "2001:4860:4860::8844")
-
-	for i in {1..5}; do
-		for ip in ${addrs[@]}; do
-			ping_ip6 "$ip" && return 0
-			sleep 0.2
-		done
-		sleep 0.2
-	done
-	return 1
+healthcheck_google() {
+	# check HTTP HEAD gets a redirect
+	url="http://google.com"
+	res1="$(curl4 $url || true)"
+	res2="$(curl6 $url || true)"
+	[[ $res1 -eq 301 || $res2 -eq 301 ]]
 }
 
 check_openvpn || (echo "openvpn is not running" && exit 1)
 check_zeroproxy || (echo "zeroproxy is not running" && exit 1)
-( check_ipv6 || check_ipv4 ) || (echo "network check (ping) failed" && exit 1)
+( healthcheck_google || healthcheck_facebook ) || (echo "HTTP healthcheck of google.com and facebook.com has failed" && exit 1)
