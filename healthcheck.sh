@@ -1,7 +1,7 @@
 #!/bin/bash
+#Unofficial Bash Strict Mode http://redsymbol.net/articles/unofficial-bash-strict-mode/
 set -euo pipefail
 IFS=$'\n\t'
-#Unofficial Bash Strict Mode http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 check_openvpn() {
 	pgrep openvpn &>/dev/null
@@ -9,6 +9,10 @@ check_openvpn() {
 
 check_zeroproxy() {
 	pgrep zeroproxy &>/dev/null
+}
+
+check_default_route() {
+	ip route | grep 0.0.0.0 | grep -q "tun0"
 }
 
 # NOTE: ping does not work realiably in docker for OSX
@@ -40,6 +44,8 @@ healthcheck_google() {
 	[[ $res1 -eq 301 || $res2 -eq 301 ]]
 }
 
-check_openvpn || (echo "openvpn is not running" && exit 1)
-check_zeroproxy || (echo "zeroproxy is not running" && exit 1)
-( healthcheck_google || healthcheck_facebook ) || (echo "HTTP healthcheck of google.com and facebook.com has failed" && exit 1)
+check_openvpn || (echo "openvpn is not running" && exit 11)
+check_zeroproxy || (echo "zeroproxy is not running" && exit 21)
+check_default_route || (echo "default route is not openvpn" && exit 31)
+( healthcheck_google || healthcheck_facebook ) || (echo "HTTP healthcheck of google.com and facebook.com has failed" && exit 41)
+
